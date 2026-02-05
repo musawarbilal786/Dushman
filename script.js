@@ -9,12 +9,34 @@ let noBtnMoved = 0;
 const moveNoButton = () => {
   const wrapRect = buttonWrap.getBoundingClientRect();
   const btnRect = noBtn.getBoundingClientRect();
+  const yesRect = yesBtn.getBoundingClientRect();
+
+  const yesArea = {
+    left: yesRect.left - wrapRect.left,
+    top: yesRect.top - wrapRect.top,
+    right: yesRect.right - wrapRect.left,
+    bottom: yesRect.bottom - wrapRect.top,
+  };
 
   const maxX = Math.max(0, wrapRect.width - btnRect.width);
   const maxY = Math.max(0, wrapRect.height - btnRect.height);
 
-  const nextX = Math.random() * maxX;
-  const nextY = Math.random() * maxY;
+  let nextX = 0;
+  let nextY = 0;
+
+  for (let attempt = 0; attempt < 12; attempt += 1) {
+    nextX = Math.random() * maxX;
+    nextY = Math.random() * maxY;
+
+    const overlapX =
+      nextX < yesArea.right && nextX + btnRect.width > yesArea.left;
+    const overlapY =
+      nextY < yesArea.bottom && nextY + btnRect.height > yesArea.top;
+
+    if (!(overlapX && overlapY)) {
+      break;
+    }
+  }
 
   noBtn.style.position = "absolute";
   noBtn.style.left = `${nextX}px`;
